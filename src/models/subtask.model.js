@@ -11,7 +11,6 @@ const subtaskSchema = new Schema({
   task_id: {
     type: Schema.Types.ObjectId,
     ref: "Task",
-    required: true,
   },
   status: {
     type: Number,
