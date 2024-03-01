@@ -1,6 +1,10 @@
 import mongoose, { Schema } from "mongoose";
 
-const subtaskSchema = new Schema({
+const taskSchema = new Schema({
+  user: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+  },
   title: {
     type: String,
     required: [true, "Title is required"],
@@ -11,6 +15,11 @@ const subtaskSchema = new Schema({
   },
   due_date: {
     type: Date,
+  },
+  status: {
+    type: String,
+    enum: ["todo", "done"],
+    default: "todo",
   },
   created_at: {
     type: Date,
@@ -27,4 +36,4 @@ const subtaskSchema = new Schema({
   },
 });
 
-export const Subtask = mongoose.model("Subtask", subtaskSchema);
+export const Task = mongoose.model("Task", taskSchema);

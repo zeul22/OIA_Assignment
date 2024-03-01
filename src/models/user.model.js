@@ -11,8 +11,9 @@ const user_schema = new Schema({
     index: true, //helps in searching for big dataset
   },
   prioity: {
-    type: Scehma.Types.ObjectId,
-    ref: "Task",
+    type: Number,
+    enum: [0, 1, 2],
+    default: 0,
   },
 });
 
