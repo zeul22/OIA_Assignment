@@ -10,7 +10,7 @@ const user_schema = new Schema({
     trim: true,
     index: true, //helps in searching for big dataset
   },
-  prioity: {
+  priority: {
     type: Number,
     enum: [0, 1, 2],
     default: 0,
