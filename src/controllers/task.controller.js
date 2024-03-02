@@ -167,17 +167,18 @@ const updateTask = asyncHandler(async (req, res) => {
     if (!updatedTask) {
       throw new ApiError(500, "Unable to update Task");
     }
-
-    await Subtask.updateMany(
-      { task_id: taskid },
-      {
-        $set: {
-          status: 1,
-          updated_at: Date.now(),
-        },
-      }
-    );
-
+    const subtasks = await Subtask.find({ task_id: taskid });
+    if (subtasks.length > 0) {
+      await Subtask.updateMany(
+        { task_id: taskid },
+        {
+          $set: {
+            status: 1,
+            updated_at: Date.now(),
+          },
+        }
+      );
+    }
     return res
       .status(200)
       .json(
