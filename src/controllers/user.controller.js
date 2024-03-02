@@ -3,6 +3,7 @@ import { body, validationResult } from "express-validator";
 import { User } from "../models/user.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
+import { Task } from "../models/task.model.js";
 
 const generateAccessTokens = async (userId) => {
   try {
@@ -59,6 +60,16 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 });
 
+// Get All Users
+const getallusers = asyncHandler(async (req, res) => {
+  try {
+    const users = await User.find();
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 //Login
 const loginUser = asyncHandler(async (req, res) => {
   const { phoneNum } = req.body;
@@ -98,33 +109,41 @@ const loginUser = asyncHandler(async (req, res) => {
 
 //Logout
 const logoutUser = asyncHandler(async (req, res) => {
-    await User.findByIdAndUpdate(
-      req.user._id,
-      {},
-      {
-        new: true,
-      }
-    );
-  
-    const options = {
-      httpOnly: true,
-      secure: true,
-    };
-  
-    return res
-      .status(200)
-      .clearCookie("accessToken", options)
-      .json(new ApiResponse(200, {}, "User logged Out"));
-  });
+  await User.findByIdAndUpdate(
+    req.user._id,
+    {},
+    {
+      new: true,
+    }
+  );
 
+  const options = {
+    httpOnly: true,
+    secure: true,
+  };
 
+  return res
+    .status(200)
+    .clearCookie("accessToken", options)
+    .json(new ApiResponse(200, {}, "User logged Out"));
+});
 
+const getAllUsersWithTasks = async (req, res) => {
+  try {
+    const usersWithTasks = await User.find().populate("tasks");
 
+    res.status(200).json({ usersWithTasks });
+  } catch (error) {
+    console.error("Error fetching users with tasks:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
 
-
-
-
-
-
-
-export { registerUser, validateUserCreation, loginUser,logoutUser };
+export {
+  registerUser,
+  validateUserCreation,
+  loginUser,
+  logoutUser,
+  getallusers,
+  getAllUsersWithTasks,
+};

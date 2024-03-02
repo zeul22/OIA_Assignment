@@ -17,6 +17,10 @@ const taskSchema = new Schema({
     type: Number,
     required: [true, "due_date is required"],
   },
+  priority: {
+    type: Number,
+    default: 0,
+  },
   status: {
     type: String,
     enum: ["todo", "progress", "done"],

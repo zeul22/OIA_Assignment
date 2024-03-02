@@ -4,32 +4,6 @@ import { Task } from "../models/task.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
-import { body } from "express-validator";
-
-//validation
-const validateCreateSubtask = [
-  body("task_id").notEmpty().withMessage("Task ID is required"),
-  body("status")
-    .isNumeric()
-    .withMessage("Status must be a number")
-    .isIn([0, 1])
-    .withMessage("Status must be either 0 or 1"),
-];
-
-// Validation middleware for updating a subtask
-const validateUpdateSubtask = [
-  body("status")
-    .optional()
-    .isNumeric()
-    .withMessage("Status must be a number")
-    .isIn([0, 1])
-    .withMessage("Status must be either 0 or 1"),
-];
-
-// Validation middleware for deleting a subtask
-const validateDeleteSubtask = [
-  body("task_id").notEmpty().withMessage("Task ID is required"),
-];
 
 // Create
 const createSubTask = asyncHandler(async (req, res) => {
@@ -175,10 +149,6 @@ const updateSubTask = asyncHandler(async (req, res) => {
       throw new ApiError(400, "Status is required");
     }
 
-    // if (existingSubTask.task_id.toString() !== taskid.toString()) {
-    //   throw new ApiError(401, "Unauthorized Access");
-    // }
-
     const updatedSubTask = await Subtask.findByIdAndUpdate(
       taskid,
       {
@@ -215,27 +185,21 @@ const softdeleteSub = asyncHandler(async (req, res) => {
   }
 
   try {
-    // Find the task by ID
     const task = await Subtask.findById(taskid);
 
-    // Check if the task exists
     if (!task) {
       return res.status(404).json({ message: "Task not found." });
     }
 
-    // Check if the task has already been soft-deleted
     if (task.deleted_at) {
       return res.status(400).json({ message: "Task already soft-deleted." });
     }
 
-    // Soft delete the task
     task.deleted_at = new Date();
     await task.save();
 
-    // Respond with success message
     return res.status(200).json({ message: "Task soft-deleted successfully." });
   } catch (error) {
-    // Handle errors
     console.error("Error occurred while soft-deleting task:", error);
     return res.status(500).json({ message: "Unable to soft-delete task." });
   }

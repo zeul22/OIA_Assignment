@@ -4,10 +4,11 @@ import { User } from "../models/user.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
+import { Subtask } from "../models/subtask.model.js";
 
 const createTask = asyncHandler(async (req, res) => {
-  const { status, description, due_date } = req.body;
-  if (!status || !description || !due_date) {
+  const { title, description, due_date, priority } = req.body;
+  if (!title || !description || !due_date || !priority) {
     throw new ApiError(400, "All fields are required!!");
   }
   try {
@@ -16,6 +17,7 @@ const createTask = asyncHandler(async (req, res) => {
       user: req.user?._id,
       description: description,
       due_date: due_date,
+      priority: priority,
     });
     if (!task) {
       throw new ApiError(500, "Unable to create task!!");
@@ -167,9 +169,25 @@ const updateTask = asyncHandler(async (req, res) => {
       throw new ApiError(500, "Unable to update Task");
     }
 
+    await Subtask.updateMany(
+      { task_id: taskid },
+      {
+        $set: {
+          status: 1,
+          updated_at: Date.now(),
+        },
+      }
+    );
+
     return res
       .status(200)
-      .json(new ApiResponse(200, updatedTask, "Task updated Successfully"));
+      .json(
+        new ApiResponse(
+          200,
+          updatedTask,
+          "Task & Subtasks updated Successfully"
+        )
+      );
   } catch (e) {
     throw new ApiError(500, e?.message || "Unable to update Task");
   }
