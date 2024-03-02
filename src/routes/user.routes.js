@@ -14,7 +14,7 @@ const router = Router();
 //see app.js to understand
 router.route("/getall").get(getallusers);
 router.route("/getalltasks").get(getAllUsersWithTasks);
-router.route("/register").post(validateUserCreation, registerUser); // /user/register
+router.route("/register").post(validateUserCreation, registerUser); 
 router.route("/login").post(loginUser);
 router.route("/logout").post(verifyJWT, logoutUser);
 

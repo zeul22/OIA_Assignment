@@ -8,7 +8,7 @@ const user_schema = new Schema({
     unique: true,
     lowercase: true,
     trim: true,
-    index: true, //helps in searching for big dataset
+    index: true, 
   },
   priority: {
     type: Number,

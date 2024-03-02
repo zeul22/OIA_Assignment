@@ -148,7 +148,6 @@ const updateTask = asyncHandler(async (req, res) => {
     if (!status || !due_date) {
       throw new ApiError(404, "Fields are required");
     }
-    //user is owner or not
     if (existingTask.user.toString() != req.user?._id?.toString()) {
       throw new ApiError(300, "Unuthorized Access");
     }
@@ -202,27 +201,21 @@ const softdelete = asyncHandler(async (req, res) => {
   }
 
   try {
-    // Find the task by ID
     const task = await Task.findById(taskid);
 
-    // Check if the task exists
     if (!task) {
       return res.status(404).json({ message: "Task not found." });
     }
 
-    // Check if the task has already been soft-deleted
     if (task.deleted_at) {
       return res.status(400).json({ message: "Task already soft-deleted." });
     }
 
-    // Soft delete the task
     task.deleted_at = new Date();
     await task.save();
 
-    // Respond with success message
     return res.status(200).json({ message: "Task soft-deleted successfully." });
   } catch (error) {
-    // Handle errors
     console.error("Error occurred while soft-deleting task:", error);
     return res.status(500).json({ message: "Unable to soft-delete task." });
   }

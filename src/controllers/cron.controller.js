@@ -42,15 +42,14 @@ const twilliojob = asyncHandler(async (req, res) => {
   // Done Everyday
   cron.schedule("* * * * *", async () => {
     try {
-      // Find tasks whose due date has passed
+
       const overdueTasks = await Task.find({
         due_date: { $lt: new Date() },
       }).populate("user");
 
       for (const task of overdueTasks) {
-        const userPriority = task.user?.priority; // Fetch user priority
+        const userPriority = task.user?.priority; 
         if (userPriority !== undefined) {
-          // Find tasks of users with lower priority who haven't been called yet
           const lowerPriorityTasks = await Task.find({
             user: { $ne: task.user._id },
             priority: { $lt: userPriority },

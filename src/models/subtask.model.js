@@ -1,9 +1,3 @@
-// id (int, unique identifier)
-// task_id (int)//references task table
-// status (0,1) //0- incomplete, 1- complete
-// created_at (date/string)
-// updated_at (date/string)
-// deleted_at (date/string)
 
 import mongoose, { Schema } from "mongoose";
 

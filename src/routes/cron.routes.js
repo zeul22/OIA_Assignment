@@ -4,7 +4,7 @@ import { verifyJWT } from "../middlewares/auth.middleware.js";
 import { runCron, twilliojob } from "../controllers/cron.controller.js";
 const router = Router();
 
-router.use(verifyJWT); // Apply verifyJWT middleware to all routes in this file
+router.use(verifyJWT);
 
 router.route("/work").post(runCron);
 router.route("/call").post(twilliojob);
